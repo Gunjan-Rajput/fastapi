@@ -1,0 +1,65 @@
+from fastapi import FastAPI
+
+app = FastAPI()
+
+users = [
+    {"id": 1, "name": "Gungun", "city": "Delhi"},
+    {"id": 2, "name": "Rahul", "city": "Mumbai"},
+    {"id": 3, "name": "Priya", "city": "Delhi"},
+]
+
+@app.get("/users")
+def get_users(city: str = None):
+    if city:
+        return [user for user in users if user["city"] == city]
+    return users 
+
+request: /users?city=Delhi
+response: [
+  {"id":1,"name":"Gungun","city":"Delhi"},
+  {"id":3,"name":"Priya","city":"Delhi"}
+]
+
+
+
+## Ordering (Sorting)
+@app.get("/users")
+def get_users(sort_by: str = None):
+    result = users.copy()
+
+    if sort_by == "name":
+        result.sort(key=lambda x: x["name"])
+
+    return result
+
+    request: /users?sort_by=name
+    response: [
+  {"id":1,"name":"Gungun","city":"Delhi"},
+  {"id":3,"name":"Priya","city":"Delhi"},
+  {"id":2,"name":"Rahul","city":"Mumbai"}
+]
+
+
+## Filtering + Ordering Together
+@app.get("/users")
+def get_users(city: str = None, sort_by: str = None):
+
+    result = users
+
+    # Filtering
+    if city:
+        result = [user for user in result if user["city"] == city]
+
+    # Ordering
+    if sort_by == "name":
+        result = sorted(result, key=lambda x: x["name"])
+
+    return result
+
+request: /users?city=Delhi&sort_by=name
+
+## Pagination + Filtering + Ordering
+/users?city=Delhi&order_by=name&page=1&limit=10
+
+
+    
