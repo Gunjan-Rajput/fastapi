@@ -1,0 +1,48 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class User(BaseModel):
+    name: str
+    age: int
+
+@app.post("/user")
+def create_user(user: User):
+    return user
+    
+
+## Email Validation
+from pydantic import BaseModel, EmailStr
+
+class User(BaseModel):
+    name: str
+    email: EmailStr
+
+    
+## Request Schema Validation
+  class Product(BaseModel):
+    name: str
+    price: float
+
+
+  ## Response Schema Validation  
+    class UserResponse(BaseModel):
+    id: int
+    name: str
+
+@app.get("/user/{id}", response_model=UserResponse)
+def get_user(id: int):
+    return {
+        "id": id,
+        "name": "Gungun",
+        "password": "12345"
+    }
+
+
+    # for Schema Validation in fastapi
+
+BaseModel
+Field
+EmailStr
+response_model
